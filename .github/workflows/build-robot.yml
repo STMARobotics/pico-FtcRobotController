@@ -18,3 +18,6 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+
+      - name: Build Robot
+        run: ./gradlew --no-daemon build
