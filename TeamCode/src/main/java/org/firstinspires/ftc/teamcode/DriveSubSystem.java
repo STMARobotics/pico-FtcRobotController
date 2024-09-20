@@ -53,7 +53,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  *
  */
 
-public class MecanumDrive {
+public class DriveSubSystem {
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
     private DcMotor frontLeftMotor;
@@ -70,7 +70,7 @@ public class MecanumDrive {
     public static final String BACK_RIGHT_MOTOR = "back_right_motor";
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
-    public MecanumDrive() {
+    public DriveSubSystem() {
     }
 
     /**
@@ -84,23 +84,11 @@ public class MecanumDrive {
         this.telemetry = telemetry;
 
         // Define and Initialize Motors
-        frontLeftMotor = hardwareMap.get(DcMotor.class, FRONT_LEFT_MOTOR);
-        frontRightMotor = hardwareMap.get(DcMotor.class, FRONT_RIGHT_MOTOR);
-        backLeftMotor = hardwareMap.get(DcMotor.class, BACK_LEFT_MOTOR);
-        backRightMotor = hardwareMap.get(DcMotor.class, BACK_RIGHT_MOTOR);
+        assignMotors();
 
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        assignDriveDirections();
 
-        frontRightMotor.setPower(0);
-        frontLeftMotor.setPower(0);
-        backRightMotor.setPower(0);
-        backLeftMotor.setPower(0);
+        setPower(0);
 
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -108,9 +96,30 @@ public class MecanumDrive {
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    private void setPower(double value) {
+        frontRightMotor.setPower(value);
+        frontLeftMotor.setPower(value);
+        backRightMotor.setPower(value);
+        backLeftMotor.setPower(value);
+    }
+
+    private void assignDriveDirections() {
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+    }
+
+    private void assignMotors() {
+        frontLeftMotor = hardwareMap.get(DcMotor.class, FRONT_LEFT_MOTOR);
+        frontRightMotor = hardwareMap.get(DcMotor.class, FRONT_RIGHT_MOTOR);
+        backLeftMotor = hardwareMap.get(DcMotor.class, BACK_LEFT_MOTOR);
+        backRightMotor = hardwareMap.get(DcMotor.class, BACK_RIGHT_MOTOR);
+    }
 
     public void setPower(float forward, float strafe, float turn, float reductionFactor) {
         float originalDenominator = calculateDenominator(forward/reductionFactor, strafe/reductionFactor, turn/reductionFactor);
+
         float adjustedDenominator = originalDenominator * reductionFactor;
         float frontLeftPower = (forward + strafe + turn) / adjustedDenominator;
         float backLeftPower = (forward - strafe + turn) / adjustedDenominator;
