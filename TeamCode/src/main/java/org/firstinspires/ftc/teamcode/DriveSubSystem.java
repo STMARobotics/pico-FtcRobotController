@@ -29,10 +29,15 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+import java.util.function.BooleanSupplier;
 
 /*
  * This file works in conjunction with the External Hardware Class sample called: ConceptExternalHardwareClass.java
@@ -55,6 +60,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class DriveSubSystem {
 
+    public static final String IMU = "imu";
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
     private DcMotor frontLeftMotor;
     private DcMotor frontRightMotor;
@@ -69,8 +75,27 @@ public class DriveSubSystem {
     public static final String BACK_LEFT_MOTOR = "back_left_motor";
     public static final String BACK_RIGHT_MOTOR = "back_right_motor";
 
-    // Define a constructor that allows the OpMode to pass a reference to itself.
-    public DriveSubSystem() {
+    final double countsPerMotorRev;
+    final double countsPerInch;
+    final double driveGearReduction;     // No External Gearing.
+
+    final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
+    private BooleanSupplier isActiveOpMode;
+    private int newFrontRightTarget;
+    private int newFrontLeftTarget;
+    private int newBackRightTarget;
+    private int newBackLeftTarget;
+    private IMU imu;
+
+
+    public DriveSubSystem(HardwareMap hm, Telemetry telemetry) {
+        this.hardwareMap = hm;
+        this.telemetry = telemetry;
+        init(hm);
+        countsPerMotorRev = frontLeftMotor.getMotorType().getTicksPerRev();
+        driveGearReduction = frontLeftMotor.getMotorType().getGearing();
+        countsPerInch = (countsPerMotorRev * driveGearReduction) /
+                (WHEEL_DIAMETER_INCHES * 3.1415);
     }
 
     /**
@@ -79,28 +104,42 @@ public class DriveSubSystem {
      * <p>
      * All of the hardware devices are accessed via the hardware map, and initialized.
      */
-    public void init(HardwareMap hm, Telemetry telemetry)    {
-        this.hardwareMap = hm;
-        this.telemetry = telemetry;
+    protected void init(HardwareMap hm) {
+        setupIMU();
 
-        // Define and Initialize Motors
         assignMotors();
 
         assignDriveDirections();
 
-        setPower(0);
+        shutOffMotors();
 
+        driveWithoutEncoders();
+    }
+
+    private void setupIMU() {
+        imu = hardwareMap.get(IMU.class, IMU);
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+        imu.initialize(parameters);
+    }
+
+    public void resetYaw(){
+        imu.resetYaw();
+    }
+
+    private void driveWithoutEncoders() {
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    private void setPower(double value) {
-        frontRightMotor.setPower(value);
-        frontLeftMotor.setPower(value);
-        backRightMotor.setPower(value);
-        backLeftMotor.setPower(value);
+    private void shutOffMotors() {
+        frontRightMotor.setPower(0);
+        frontLeftMotor.setPower(0);
+        backRightMotor.setPower(0);
+        backLeftMotor.setPower(0);
     }
 
     private void assignDriveDirections() {
@@ -117,28 +156,53 @@ public class DriveSubSystem {
         backRightMotor = hardwareMap.get(DcMotor.class, BACK_RIGHT_MOTOR);
     }
 
-    public void setPower(float forward, float strafe, float turn, float reductionFactor) {
-        float originalDenominator = calculateDenominator(forward/reductionFactor, strafe/reductionFactor, turn/reductionFactor);
+    public void moveRobotCentric(float forward, float strafe, float turn, float reductionFactor) {
+            float originalDenominator = calculateDenominator(forward / reductionFactor, strafe / reductionFactor, turn / reductionFactor);
 
-        float adjustedDenominator = originalDenominator * reductionFactor;
-        float frontLeftPower = (forward + strafe + turn) / adjustedDenominator;
-        float backLeftPower = (forward - strafe + turn) / adjustedDenominator;
-        float frontRightPower = (forward - strafe - turn) / adjustedDenominator;
-        float backRightPower = (forward + strafe - turn) / adjustedDenominator;
+            float adjustedDenominator = originalDenominator * reductionFactor;
+            float frontLeftPower = (forward + strafe + turn) / adjustedDenominator;
+            float backLeftPower = (forward - strafe + turn) / adjustedDenominator;
+            float frontRightPower = (forward - strafe - turn) / adjustedDenominator;
+            float backRightPower = (forward + strafe - turn) / adjustedDenominator;
+
+            frontLeftMotor.setPower(frontLeftPower);
+            backLeftMotor.setPower(backLeftPower);
+            frontRightMotor.setPower(frontRightPower);
+            backRightMotor.setPower(backRightPower);
+
+            telemetry.addData("Forward", forward);
+            telemetry.addData("Strafe", strafe);
+            telemetry.addData("Turn", turn);
+            telemetry.addData("Reduction Factor", reductionFactor);
+            telemetry.addData("Front Left Power", frontLeftPower);
+            telemetry.addData("Front Right Power", frontRightPower);
+            telemetry.addData("Back Left Power", backLeftPower);
+            telemetry.addData("Back Right Power", backRightPower);
+
+    }
+
+    public void moveFieldCentric(double x, double y, double rx){
+        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+        // Rotate the movement direction counter to the bot's rotation
+        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+        rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+        // Denominator is the largest motor power (absolute value) or 1
+        // This ensures all the powers maintain the same ratio,
+        // but only if at least one is out of the range [-1, 1]
+        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+        double frontLeftPower = (rotY + rotX + rx) / denominator;
+        double backLeftPower = (rotY - rotX + rx) / denominator;
+        double frontRightPower = (rotY - rotX - rx) / denominator;
+        double backRightPower = (rotY + rotX - rx) / denominator;
 
         frontLeftMotor.setPower(frontLeftPower);
         backLeftMotor.setPower(backLeftPower);
         frontRightMotor.setPower(frontRightPower);
         backRightMotor.setPower(backRightPower);
-
-        telemetry.addData("Forward", forward);
-        telemetry.addData("Strafe", strafe);
-        telemetry.addData("Turn", turn);
-        telemetry.addData("Reduction Factor", reductionFactor);
-        telemetry.addData("Front Left Power", frontLeftPower);
-        telemetry.addData("Front Right Power", frontRightPower);
-        telemetry.addData("Back Left Power", backLeftPower);
-        telemetry.addData("Back Right Power", backRightPower);
     }
 
     private float calculateDenominator(float forward, float strafe, float turn) {
@@ -147,5 +211,77 @@ public class DriveSubSystem {
             return sum;
         }
         return 1;
+    }
+
+    public void driveWithEncoders() {
+
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        telemetry.addData("Starting at", "FL: %7d FR: %7d BL: %7d BR: %7d",
+                frontLeftMotor.getCurrentPosition(), frontRightMotor.getCurrentPosition(),
+                backLeftMotor.getCurrentPosition(), backRightMotor.getCurrentPosition());
+
+    }
+
+    public void driveForward(double speed, double inches) {
+
+        newFrontRightTarget = frontRightMotor.getCurrentPosition() + (int) (inches * countsPerInch);
+        newFrontLeftTarget = frontLeftMotor.getCurrentPosition() + (int) (inches * countsPerInch);
+        newBackRightTarget = backRightMotor.getCurrentPosition() + (int) (inches * countsPerInch);
+        newBackLeftTarget = backLeftMotor.getCurrentPosition() + (int) (inches * countsPerInch);
+
+        frontRightMotor.setTargetPosition(newFrontRightTarget);
+        frontLeftMotor.setTargetPosition(newFrontLeftTarget);
+        backLeftMotor.setTargetPosition(newBackLeftTarget);
+        backRightMotor.setTargetPosition(newBackRightTarget);
+    }
+
+    public void strafeLeft(double speed, double inches) {
+
+        int newFrontRightTarget = frontRightMotor.getCurrentPosition() + (int) (inches * countsPerInch);
+        int newFrontLeftTarget = frontLeftMotor.getCurrentPosition() + (int) (inches * countsPerInch);
+        int newBackRightTarget = backRightMotor.getCurrentPosition() - (int) (inches * countsPerInch);
+        int newBackLeftTarget = backLeftMotor.getCurrentPosition() - (int) (inches * countsPerInch);
+
+        frontRightMotor.setTargetPosition(newFrontRightTarget);
+        frontLeftMotor.setTargetPosition(newFrontLeftTarget);
+        backLeftMotor.setTargetPosition(newBackLeftTarget);
+        backRightMotor.setTargetPosition(newBackRightTarget);
+    }
+
+    public void turnLeft(double speed, double degrees) {
+
+        int newFrontRightTarget = frontRightMotor.getCurrentPosition() + (int) (degrees * countsPerInch);
+        int newFrontLeftTarget = frontLeftMotor.getCurrentPosition() - (int) (degrees * countsPerInch);
+        int newBackRightTarget = backRightMotor.getCurrentPosition() + (int) (degrees * countsPerInch);
+        int newBackLeftTarget = backLeftMotor.getCurrentPosition() - (int) (degrees * countsPerInch);
+
+        frontRightMotor.setTargetPosition(newFrontRightTarget);
+        frontLeftMotor.setTargetPosition(newFrontLeftTarget);
+        backLeftMotor.setTargetPosition(newBackLeftTarget);
+        backRightMotor.setTargetPosition(newBackRightTarget);
+
+    }
+
+    public boolean isMoving() {
+        return frontLeftMotor.isBusy() && frontRightMotor.isBusy() && backRightMotor.isBusy() && backLeftMotor.isBusy();
+    }
+
+    public void logPosition(){
+        telemetry.addData("Running to", "FL: %7d FR: %7d BL: %7d BR: %7d",
+                newFrontLeftTarget, newFrontRightTarget,
+                newBackLeftTarget, newBackRightTarget);
+        telemetry.addData("Currently at", "FL: %7d FR: %7d BL: %7d BR: %7d",
+                frontLeftMotor.getCurrentPosition(), frontRightMotor.getCurrentPosition(),
+                backLeftMotor.getCurrentPosition(), backRightMotor.getCurrentPosition());
+        telemetry.update();
     }
 }

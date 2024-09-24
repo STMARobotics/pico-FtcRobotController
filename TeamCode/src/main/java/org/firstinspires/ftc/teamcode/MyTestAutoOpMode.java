@@ -29,61 +29,58 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
 /*
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When a selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
+ * This OpMode illustrates the concept of driving a path based on encoder counts.
+ * The code is structured as a LinearOpMode
  *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
+ * The code REQUIRES that you DO have encoders on the wheels,
+ *   otherwise you would use: RobotAutoDriveByTime;
+ *
+ *  This code ALSO requires that the drive Motors have been configured such that a positive
+ *  power command moves them forward, and causes the encoders to count UP.
+ *
+ *   The desired path in this example is:
+ *   - Drive forward for 48 inches
+ *   - Spin right for 12 Inches
+ *   - Drive Backward for 24 inches
+ *   - Stop and close the claw.
+ *
+ *  The code is written using a method called: encoderDrive(speed, leftInches, rightInches, timeoutS)
+ *  that performs the actual movement.
+ *  This method assumes that each movement is relative to the last stopping place.
+ *  There are other ways to perform encoder based moves, but this method is probably the simplest.
+ *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Drive Only OpMode", group="Linear OpMode")
+@Autonomous(name="Robot: Auto Drive By Encoder", group="Robot")
 //@Disabled
-public class DriveOnlyOpMode extends LinearOpMode {
-
-    // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    DriveSubSystem driveSubSystem;
-
+public class MyTestAutoOpMode extends LinearOpMode {
+    private DriveSubSystem driveSubSystem;
 
     @Override
     public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+
         driveSubSystem = new DriveSubSystem(hardwareMap, telemetry);
+        AutonomousDrivingCommand adc = new AutonomousDrivingCommand(this, driveSubSystem);
 
-        // Wait for the game to start (driver presses START)
+        driveSubSystem.driveWithEncoders();
+
+
         waitForStart();
-        runtime.reset();
+        adc.driveForward(5, 10, 2);
+        adc.strafeLeft(5, 15, 3);
+        adc.turnLeft(4, 10, 4);
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-
-
-            float forward = gamepad1.left_stick_y;
-            float strafe = gamepad1.left_stick_x;
-            float turn = gamepad1.right_stick_x;
-
-            float reductionFactor = 1;
-            if (gamepad1.left_bumper) {
-                reductionFactor = 4;
-            }
-
-            driveSubSystem.moveRobotCentric(forward, strafe, turn, reductionFactor);
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.update();
-        }
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
+        sleep(1000);  // pause to display final telemetry message.
     }
 }
