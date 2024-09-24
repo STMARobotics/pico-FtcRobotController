@@ -14,33 +14,31 @@ public class AutonomousDrivingCommand {
     }
 
     public void driveForward(double speed, double distanceInInches, int timeoutSeconds) {
-        ElapsedTime runtime = new ElapsedTime();
         driveSystem.driveWithEncoders();
 
         driveSystem.driveForward(speed, distanceInInches);
 
-        waitUntilDone(timeoutSeconds, runtime);
+        waitUntilDone(timeoutSeconds);
     }
 
     public void strafeLeft(double speed, double distanceInInches, int timeoutSeconds) {
-        ElapsedTime runtime = new ElapsedTime();
         driveSystem.driveWithEncoders();
 
         driveSystem.strafeLeft(speed, distanceInInches);
 
-        waitUntilDone(timeoutSeconds, runtime);
+        waitUntilDone(timeoutSeconds);
     }
 
     public void turnLeft(double speed, double degrees, int timeoutSeconds) {
-        ElapsedTime runtime = new ElapsedTime();
         driveSystem.driveWithEncoders();
 
         driveSystem.turnLeft(speed, degrees);
 
-        waitUntilDone(timeoutSeconds, runtime);
+        waitUntilDone(timeoutSeconds);
     }
 
-    private void waitUntilDone(int timeoutSeconds, ElapsedTime runtime) {
+    private void waitUntilDone(int timeoutSeconds) {
+        ElapsedTime runtime = new ElapsedTime();
         while (opMode.opModeIsActive() &&
                 (runtime.seconds() < timeoutSeconds) && driveSystem.isMoving()){
             driveSystem.logPosition();
