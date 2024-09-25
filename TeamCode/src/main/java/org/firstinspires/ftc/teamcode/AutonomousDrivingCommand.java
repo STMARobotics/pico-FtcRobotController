@@ -4,8 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class AutonomousDrivingCommand {
-    private final LinearOpMode opMode;
+public class AutonomousDrivingCommand extends AbstractAutonomousCommand{
     private final DriveSubSystem driveSystem;
 
     public AutonomousDrivingCommand(LinearOpMode opMode, DriveSubSystem driveSubSystem) {
@@ -37,11 +36,19 @@ public class AutonomousDrivingCommand {
         waitUntilDone(timeoutSeconds);
     }
 
-    private void waitUntilDone(int timeoutSeconds) {
-        ElapsedTime runtime = new ElapsedTime();
-        while (opMode.opModeIsActive() &&
-                (runtime.seconds() < timeoutSeconds) && driveSystem.isMoving()){
-            driveSystem.logPosition();
-        }
+
+    @Override
+    boolean isFinished() {
+        return !driveSystem.isMoving();
+    }
+
+    @Override
+    protected void logMessage() {
+        driveSystem.logPosition();
+    }
+
+    @Override
+    protected void onComplete() {
+        driveSystem.shutOffMotors();
     }
 }

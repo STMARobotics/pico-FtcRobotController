@@ -75,9 +75,12 @@ public class MyTestAutoOpMode extends LinearOpMode {
 
 
         waitForStart();
+
         adc.driveForward(5, 10, 2);
         adc.strafeLeft(5, 15, 3);
         adc.turnLeft(4, 10, 4);
+
+
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

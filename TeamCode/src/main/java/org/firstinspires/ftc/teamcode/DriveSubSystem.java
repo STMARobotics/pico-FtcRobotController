@@ -128,14 +128,14 @@ public class DriveSubSystem {
         imu.resetYaw();
     }
 
-    private void driveWithoutEncoders() {
+    public void driveWithoutEncoders() {
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    private void shutOffMotors() {
+    public void shutOffMotors() {
         frontRightMotor.setPower(0);
         frontLeftMotor.setPower(0);
         backRightMotor.setPower(0);
