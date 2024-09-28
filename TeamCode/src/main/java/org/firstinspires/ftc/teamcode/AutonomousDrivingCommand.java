@@ -34,19 +34,4 @@ public class AutonomousDrivingCommand extends AbstractAutonomousCommand{
         waitUntilDone(timeoutSeconds);
     }
 
-
-    @Override
-    boolean isFinished() {
-        return !driveSystem.isMoving();
-    }
-
-    @Override
-    protected void logMessage() {
-        driveSystem.logPosition();
-    }
-
-    @Override
-    protected void onComplete() {
-        driveSystem.shutOffMotors();
-    }
 }

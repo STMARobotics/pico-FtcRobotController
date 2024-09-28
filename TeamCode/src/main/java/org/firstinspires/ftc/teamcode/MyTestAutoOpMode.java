@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.CommandFactory.*;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -69,17 +71,19 @@ public class MyTestAutoOpMode extends LinearOpMode {
     public void runOpMode() {
 
         driveSubSystem = new DriveSubSystem(hardwareMap, telemetry);
-        AutonomousDrivingCommand adc = new AutonomousDrivingCommand(this, driveSubSystem);
-
-        driveSubSystem.driveWithEncoders();
-
+        CommandFactory.InitFactory(driveSubSystem);
 
         waitForStart();
 
-        adc.driveForward(5, 10, 2);
-        adc.strafeLeft(5, 15, 3);
-        adc.turnLeft(4, 10, 4);
-
+        CommandRunner.OpMode(this)
+                .commands(
+                        Forward(5, 2, 3),
+                        TurnLeft(17, 2),
+                        StrafeLeft(14, 4, 2),
+                        Backward(12, 2, 4),
+                        TurnRight(11, 3),
+                        StrafeRight(6,2,1)
+                ).run();
 
 
         telemetry.addData("Path", "Complete");
