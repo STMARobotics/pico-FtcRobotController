@@ -53,14 +53,14 @@ public class DriveOnlyOpMode extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    DriveSubSystem driveSubSystem;
+    DriveSubsystem driveSubSystem;
 
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        driveSubSystem = new DriveSubSystem(hardwareMap, telemetry);
+        driveSubSystem = new DriveSubsystem(hardwareMap, telemetry);
 
         // Wait for the game to start (driver presses START)
         waitForStart();

@@ -33,8 +33,6 @@ import static org.firstinspires.ftc.teamcode.CommandFactory.*;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
  * This OpMode illustrates the concept of driving a path based on encoder counts.
@@ -65,12 +63,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name="Robot: Auto Drive By Encoder", group="Robot")
 //@Disabled
 public class MyTestAutoOpMode extends LinearOpMode {
-    private DriveSubSystem driveSubSystem;
+    private DriveSubsystem driveSubSystem;
 
     @Override
     public void runOpMode() {
 
-        driveSubSystem = new DriveSubSystem(hardwareMap, telemetry);
+        driveSubSystem = new DriveSubsystem(hardwareMap, telemetry);
         CommandFactory.InitFactory(driveSubSystem);
 
         waitForStart();

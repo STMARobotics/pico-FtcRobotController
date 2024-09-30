@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 public class CommandFactory {
     private static CommandFactory commandFactory;
-    private final DriveSubSystem driveSubsystem;
+    private final DriveSubsystem driveSubsystem;
 
-    private CommandFactory(DriveSubSystem driveSubsystem) {
+    private CommandFactory(DriveSubsystem driveSubsystem) {
         this.driveSubsystem = driveSubsystem;
     }
 
-    public static void InitFactory(DriveSubSystem driveSubSystem){
+    public static void InitFactory(DriveSubsystem driveSubSystem){
         commandFactory = new CommandFactory(driveSubSystem);
     }
 

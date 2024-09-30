@@ -58,7 +58,7 @@ import java.util.function.BooleanSupplier;
  *
  */
 
-public class DriveSubSystem {
+public class DriveSubsystem {
 
     public static final String IMU = "imu";
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
@@ -88,7 +88,7 @@ public class DriveSubSystem {
     private IMU imu;
 
 
-    public DriveSubSystem(HardwareMap hm, Telemetry telemetry) {
+    public DriveSubsystem(HardwareMap hm, Telemetry telemetry) {
         this.hardwareMap = hm;
         this.telemetry = telemetry;
         init(hm);

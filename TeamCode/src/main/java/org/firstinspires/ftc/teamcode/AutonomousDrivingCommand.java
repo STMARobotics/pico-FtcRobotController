@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class AutonomousDrivingCommand extends AbstractAutonomousCommand{
-    private final DriveSubSystem driveSystem;
+    private final DriveSubsystem driveSystem;
 
-    public AutonomousDrivingCommand(LinearOpMode opMode, DriveSubSystem driveSubSystem) {
+    public AutonomousDrivingCommand(LinearOpMode opMode, DriveSubsystem driveSubSystem) {
         this.opMode = opMode;
         this.driveSystem = driveSubSystem;
     }

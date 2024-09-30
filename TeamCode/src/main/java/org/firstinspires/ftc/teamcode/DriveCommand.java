@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 public abstract class DriveCommand implements Command{
-    protected DriveSubSystem driveSystem;
+    protected DriveSubsystem driveSystem;
     protected int timeout;
 
     @Override

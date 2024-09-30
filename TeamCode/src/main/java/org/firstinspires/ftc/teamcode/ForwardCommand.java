@@ -4,7 +4,7 @@ public class ForwardCommand extends DriveCommand implements Command{
     private final double inchesForward;
     private final double speed;
 
-    public ForwardCommand(DriveSubSystem driveSystem, double inchesForward, double speed, int timeout) {
+    public ForwardCommand(DriveSubsystem driveSystem, double inchesForward, double speed, int timeout) {
         this.driveSystem = driveSystem;
         this.inchesForward = inchesForward;
         this.speed = speed;
