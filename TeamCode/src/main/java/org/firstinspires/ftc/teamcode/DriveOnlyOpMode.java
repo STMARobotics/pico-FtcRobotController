@@ -53,15 +53,14 @@ public class DriveOnlyOpMode extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-     DriveSubsystem driveSubSystem = new DriveSubsystem();
-
+    DriveSubsystem driveSubsystem = new DriveSubsystem();
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        driveSubSystem.init(hardwareMap,telemetry);
-
+        driveSubsystem.init(hardwareMap,telemetry);
+        driveSubsystem.init(hardwareMap, telemetry);
 
         // Wait for the game to start (driver presses START)
         waitForStart();
@@ -69,6 +68,7 @@ public class DriveOnlyOpMode extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
             float forward = gamepad1.left_stick_y;
             float strafe = gamepad1.left_stick_x;
             float turn = gamepad1.right_stick_x;
@@ -78,7 +78,7 @@ public class DriveOnlyOpMode extends LinearOpMode {
                 reductionFactor = 4;
             }
 
-            driveSubSystem.setPower(forward,strafe, turn,reductionFactor);
+            driveSubsystem.setPower(forward, strafe, turn, reductionFactor);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
