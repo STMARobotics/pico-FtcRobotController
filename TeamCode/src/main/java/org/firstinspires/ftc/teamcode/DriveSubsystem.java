@@ -38,6 +38,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import java.util.function.BooleanSupplier;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /*
  * This file works in conjunction with the External Hardware Class sample called: ConceptExternalHardwareClass.java
@@ -75,9 +79,9 @@ public class DriveSubsystem {
     public static final String BACK_LEFT_MOTOR = "back_left_motor";
     public static final String BACK_RIGHT_MOTOR = "back_right_motor";
 
-    final double countsPerMotorRev;
-    final double countsPerInch;
-    final double driveGearReduction;     // No External Gearing.
+    private double countsPerMotorRev;
+    private double countsPerInch;
+    private double driveGearReduction;     // No External Gearing.
 
     final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     private BooleanSupplier isActiveOpMode;
@@ -91,13 +95,12 @@ public class DriveSubsystem {
     public DriveSubsystem(HardwareMap hm, Telemetry telemetry) {
         this.hardwareMap = hm;
         this.telemetry = telemetry;
-        init(hm);
+        this.init(hm);
         countsPerMotorRev = frontLeftMotor.getMotorType().getTicksPerRev();
         driveGearReduction = frontLeftMotor.getMotorType().getGearing();
         countsPerInch = (countsPerMotorRev * driveGearReduction) /
                 (WHEEL_DIAMETER_INCHES * 3.1415);
     }
-
     /**
      * Initialize all the robot's hardware.
      * This method must be called ONCE when the OpMode is initialized.
@@ -106,6 +109,8 @@ public class DriveSubsystem {
      */
     protected void init(HardwareMap hm) {
         setupIMU();
+
+        this.hardwareMap = hm;
 
         assignMotors();
 
@@ -140,6 +145,13 @@ public class DriveSubsystem {
         frontLeftMotor.setPower(0);
         backRightMotor.setPower(0);
         backLeftMotor.setPower(0);
+    }
+
+    private void setPower(double value) {
+        frontRightMotor.setPower(value);
+        frontLeftMotor.setPower(value);
+        backRightMotor.setPower(value);
+        backLeftMotor.setPower(value);
     }
 
     private void assignDriveDirections() {
@@ -181,7 +193,7 @@ public class DriveSubsystem {
 
     }
 
-    public void moveFieldCentric(double x, double y, double rx){
+    public void moveFieldCentric(double x, double y, double rx) {
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         // Rotate the movement direction counter to the bot's rotation
@@ -198,11 +210,30 @@ public class DriveSubsystem {
         double backLeftPower = (rotY - rotX + rx) / denominator;
         double frontRightPower = (rotY - rotX - rx) / denominator;
         double backRightPower = (rotY + rotX - rx) / denominator;
+    }
+
+    public void setPower(float forward, float strafe, float turn, float reductionFactor) {
+        float originalDenominator = calculateDenominator(forward/reductionFactor, strafe/reductionFactor, turn/reductionFactor);
+
+        float adjustedDenominator = originalDenominator * reductionFactor;
+        float frontLeftPower = (forward + strafe + turn) / adjustedDenominator;
+        float backLeftPower = (forward - strafe + turn) / adjustedDenominator;
+        float frontRightPower = (forward - strafe - turn) / adjustedDenominator;
+        float backRightPower = (forward + strafe - turn) / adjustedDenominator;
 
         frontLeftMotor.setPower(frontLeftPower);
         backLeftMotor.setPower(backLeftPower);
         frontRightMotor.setPower(frontRightPower);
         backRightMotor.setPower(backRightPower);
+
+        telemetry.addData("Forward", forward);
+        telemetry.addData("Strafe", strafe);
+        telemetry.addData("Turn", turn);
+        telemetry.addData("Reduction Factor", reductionFactor);
+        telemetry.addData("Front Left Power", frontLeftPower);
+        telemetry.addData("Front Right Power", frontRightPower);
+        telemetry.addData("Back Left Power", backLeftPower);
+        telemetry.addData("Back Right Power", backRightPower);
     }
 
     private float calculateDenominator(float forward, float strafe, float turn) {
