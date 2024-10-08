@@ -9,16 +9,16 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class SlideSubsystem {
 
-    private DcMotor slideMoter;
+    private DcMotor slideMotor;
     public static final String SLIDE_MOTOR="slide-motor";
 
-    final double LIFT_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
+    public static final double LIFT_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
 
-    final double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
-    final double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
-    final double LIFT_SCORING_IN_HIGH_BASKET = 480 * LIFT_TICKS_PER_MM;
+    public static final double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
+    public static final double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
+    public static final double LIFT_SCORING_IN_HIGH_BASKET = 480 * LIFT_TICKS_PER_MM;
 
-    double liftposition = LIFT_COLLAPSED;
+    double liftPosition = LIFT_COLLAPSED;
 
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
@@ -27,23 +27,23 @@ public class SlideSubsystem {
         this.hardwareMap = hm;
         this.telemetry = telemetry;
 
-        slideMoter = hardwareMap.get(DcMotor.class, SLIDE_MOTOR);
+        slideMotor = hardwareMap.get(DcMotor.class, SLIDE_MOTOR);
 
-        slideMoter.setDirection(DcMotorSimple.Direction.REVERSE);
-        slideMoter.setTargetPosition(0);
-        slideMoter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideMoter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideMotor.setTargetPosition(0);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void changePosition(int positionDelta){
-        this.liftposition = this.liftposition + positionDelta;
-        setPosition(this.liftposition);
+        this.liftPosition = this.liftPosition + positionDelta;
+        setPosition(this.liftPosition);
     }
 
-    private void setPosition(double liftposition) {
-        slideMoter.setTargetPosition((int) (liftposition));
+    public void setPosition(double liftPosition) {
+        slideMotor.setTargetPosition((int) (liftPosition));
 
-        ((DcMotorEx) slideMoter).setVelocity(2100);
-        slideMoter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        ((DcMotorEx) slideMotor).setVelocity(2100);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
