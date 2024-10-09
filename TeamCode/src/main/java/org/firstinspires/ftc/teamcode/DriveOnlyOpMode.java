@@ -61,9 +61,9 @@ public class DriveOnlyOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        DriveSubsystem driveSubsystem = new DriveSubsystem(hardwareMap, telemetry);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        driveSubsystem.init(hardwareMap,telemetry);
         slideSubsystem = new SlideSubsystem(hardwareMap, telemetry);
         arm = new ArmSubsystem(hardwareMap, telemetry);
         wrist = new WristSubsystem(hardwareMap, telemetry);
@@ -114,7 +114,7 @@ public class DriveOnlyOpMode extends LinearOpMode {
                 wrist.moveToPosition(0);
             }
 
-            driveSubsystem.setPower(forward, strafe, turn, reductionFactor);
+            driveSubsystem.moveRobotCentric(forward, strafe, turn, reductionFactor);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
