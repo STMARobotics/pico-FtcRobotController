@@ -54,7 +54,7 @@ public class DriveOnlyOpMode extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    DriveSubsystem driveSubsystem = new DriveSubsystem();
+    DriveSubsystem driveSubsystem;
     SlideSubsystem slideSubsystem;
     ArmSubsystem arm;
     WristSubsystem wrist;
