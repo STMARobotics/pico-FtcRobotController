@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -71,6 +72,9 @@ public class DriveOnlyOpMode extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+
+
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -81,6 +85,19 @@ public class DriveOnlyOpMode extends LinearOpMode {
             float reductionFactor = 1;
             if (gamepad1.left_bumper) {
                 reductionFactor = 4;
+            }
+            CRServo intakeServo = hardwareMap.get(CRServo.class,"intakeServo");
+            if (gamepad2.a) {
+                intakeServo.setPower(1);
+                arm.moveToArmToCollectPosition();
+            }
+            if (gamepad2.b) {
+                intakeServo.setPower(-1);
+                slideSubsystem.setPosition(SlideSubsystem.LIFT_SCORING_IN_HIGH_BASKET);
+            } else if (gamepad2.x)
+                intakeServo.setPower(0)
+                arm.moveArmToScoreSampleInLowPosition();
+
             }
 
             // Move Slide to positions

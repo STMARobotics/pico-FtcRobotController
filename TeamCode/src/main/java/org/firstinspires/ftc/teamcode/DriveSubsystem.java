@@ -29,19 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
-import java.util.function.BooleanSupplier;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /*
  * This file works in conjunction with the External Hardware Class sample called: ConceptExternalHardwareClass.java
@@ -61,6 +49,16 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * Also add a new OpMode, select the sample ConceptExternalHardwareClass.java, and select TeleOp.
  *
  */
+
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+import java.util.function.BooleanSupplier;
 
 public class DriveSubsystem {
 
@@ -120,6 +118,7 @@ public class DriveSubsystem {
 
         driveWithoutEncoders();
     }
+
 
     private void setupIMU() {
         imu = hardwareMap.get(IMU.class, IMU);
