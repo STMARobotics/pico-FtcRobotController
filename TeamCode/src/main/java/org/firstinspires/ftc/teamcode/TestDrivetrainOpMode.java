@@ -31,8 +31,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
 /*
@@ -48,96 +48,47 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Drive Only OpMode", group="Linear OpMode")
-//@Disabled
-public class DriveOnlyOpMode extends LinearOpMode {
+@TeleOp(name="Test: Drive motors", group="Linear OpMode")
+public class TestDrivetrainOpMode extends LinearOpMode {
 
     // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    DriveSubsystem driveSubsystem;
-    SlideSubsystem slideSubsystem;
-    ArmSubsystem armSubsystem;
-    WristSubsystem wrist;
+    public static final String FRONT_LEFT_MOTOR = "front_left_motor";
+    public static final String FRONT_RIGHT_MOTOR = "front_right_motor";
+    public static final String BACK_LEFT_MOTOR = "back_left_motor";
+    public static final String BACK_RIGHT_MOTOR = "back_right_motor";
+    public static final String SLIDE_LEFT_MOTOR = "slide_left_motor";
+    public static final String SLIDE_RIGHT_MOTOR = "slide_right_motor";
+
 
     @Override
     public void runOpMode() {
-        DriveSubsystem driveSubsystem = new DriveSubsystem(hardwareMap, telemetry);
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-        slideSubsystem = new SlideSubsystem(hardwareMap, telemetry);
-        armSubsystem = new ArmSubsystem(hardwareMap, telemetry);
-        wrist = new WristSubsystem(hardwareMap, telemetry);
+
+        DcMotor frontLeftMotor = hardwareMap.get(DcMotor.class, FRONT_LEFT_MOTOR);
+        DcMotor frontRightMotor = hardwareMap.get(DcMotor.class, FRONT_RIGHT_MOTOR);
+        DcMotor backLeftMotor = hardwareMap.get(DcMotor.class, BACK_LEFT_MOTOR);
+        DcMotor backRightMotor = hardwareMap.get(DcMotor.class, BACK_RIGHT_MOTOR);
+        DcMotor slideLeftMotor = hardwareMap.get(DcMotor.class, SLIDE_LEFT_MOTOR);
+        DcMotor slideRightMotor = hardwareMap.get(DcMotor.class, SLIDE_RIGHT_MOTOR);
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        slideRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        slideLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+
         // Wait for the game to start (driver presses START)
         waitForStart();
-        runtime.reset();
-
-
-
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            float forward = -gamepad1.left_stick_y;
-            float slide = gamepad2.left_stick_y;
-            float strafe = gamepad1.left_stick_x;
-            float turn = gamepad1.right_stick_x;
-            float arm = gamepad2.right_stick_y;
+            frontRightMotor.setPower(gamepad1.y ? .5 : 0);
+            frontLeftMotor.setPower(gamepad1.x ? .5 : 0);
+            backRightMotor.setPower(gamepad1.b ? .5 : 0);
+            backLeftMotor.setPower(gamepad1.a ? .5 : 0);
+            slideRightMotor.setPower(gamepad1.dpad_down? .5 : 0);
+            slideLeftMotor.setPower(gamepad1.dpad_up ? .5 : 0);
 
-
-            double fudgeFactorPercentage = gamepad2.right_trigger + (-gamepad2.left_trigger);
-
-            float reductionFactor = 1;
-            if (gamepad1.left_bumper) {
-                reductionFactor = 4;
-            }
-            CRServo intakeServo = hardwareMap.get(CRServo.class,"intakeServo");
-            //Set Commands for Intake,Score, and Neutral
-            if (gamepad2.a) {
-                intakeServo.setPower(1);
-
-            }
-            if (Math.abs(arm) >= 0.5) {
-                armSubsystem.setPower(-arm);
-            } else {
-                armSubsystem.stop();
-            }
-            if (slide != 0) {
-
-                slideSubsystem.setPower(-slide);
-            } else {
-                slideSubsystem.stop();
-
-                // set target postion to current position
-                // change mode to run to encoder
-                // set power on again
-            }
-            if (slide == 1);
-            }
-
-             if (gamepad2.b) {
-                intakeServo.setPower(-1);
-
-            }
-
-             if (gamepad2.x){
-                intakeServo.setPower(0);
-            }
-
-            // Move Slide to positions
-
-
-
-            if (gamepad2.left_bumper){
-                wrist.moveToPosition(.75);
-            } else if (gamepad2.left_trigger > 0){
-                wrist.moveToPosition(0);
-            }
-
-            driveSubsystem.moveRobotCentric(forward, strafe, turn, reductionFactor);
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.update();
         }
     }
 }
