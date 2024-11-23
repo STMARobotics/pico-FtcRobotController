@@ -19,7 +19,8 @@ public class ArmSubsystem {
     public ArmSubsystem(HardwareMap hm, Telemetry telemetry) {
         this.hardwareMap = hm;
         this.telemetry = telemetry;
-        this.init(hm);}
+        this.init(hm);
+    }
     protected void init(HardwareMap hm) {
 
         this.hardwareMap = hm;
@@ -55,6 +56,8 @@ public class ArmSubsystem {
 
     private void assignMotors() {
         armMotor = hardwareMap.get(DcMotor.class, ARM_MOTOR);
+        leverLock = hardwareMap.get(Servo.class, "leverLock");
+        intakeServo = hardwareMap.get(CRServo.class,"intakeServo");
     }
 
 
@@ -70,5 +73,5 @@ public class ArmSubsystem {
 
 
     public void lock(){leverLock.setPosition(0);}
-    public void unlock(){leverLock.setPosition(.5);}
+    public void unlock(){leverLock.setPosition(.25);}
 }

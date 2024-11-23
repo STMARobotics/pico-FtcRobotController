@@ -57,7 +57,6 @@ public class DriveOnlyOpMode extends LinearOpMode {
     DriveSubsystem driveSubsystem;
     SlideSubsystem slideSubsystem;
     ArmSubsystem armSubsystem;
-    WristSubsystem wrist;
 
     @Override
     public void runOpMode() {
@@ -66,7 +65,6 @@ public class DriveOnlyOpMode extends LinearOpMode {
         telemetry.update();
         slideSubsystem = new SlideSubsystem(hardwareMap, telemetry);
         armSubsystem = new ArmSubsystem(hardwareMap, telemetry);
-        wrist = new WristSubsystem(hardwareMap, telemetry);
         // Wait for the game to start (driver presses START)
         waitForStart();
         runtime.reset();
