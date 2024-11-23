@@ -71,12 +71,7 @@ public class ArmSubsystem {
 
 
 
-    public void stop() {
-        int currentArm =  armMotor.getCurrentPosition();
-        armMotor.setTargetPosition(currentArm);
-        armMotor.setPower(.5);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
+
 
     public void logPosition(){
         telemetry.addData("armMotor",armMotor.getCurrentPosition());

@@ -97,12 +97,10 @@ public class DriveOnlyOpMode extends LinearOpMode {
             } else if (gamepad2.b) {
                 armSubsystem.drop();
             }
-            if (Math.abs(arm) > .1) {
+            if (Math.abs(arm) > .3) {
                 armSubsystem.setPower(arm * .5);
                 armSubsystem.logPosition();
 
-            } else {
-                armSubsystem.stop();
             }
             armSubsystem.logPosition();
             if (slide > .1) {
