@@ -71,47 +71,63 @@ public class DriveOnlyOpMode extends LinearOpMode {
 
 
         // run until the end of the match (driver presses STOP)
+        float forward;
+        float strafe;
+        float turn;
+        float reductionFactor;
         while (opModeIsActive()) {
 
-            float forward = -gamepad1.left_stick_y;
+            forward = -gamepad1.left_stick_y;
             float slide = gamepad2.left_stick_y;
-            float strafe = gamepad1.left_stick_x;
-            float turn = gamepad1.right_stick_x;
+            strafe = gamepad1.left_stick_x;
+            turn = gamepad1.right_stick_x;
             float arm = gamepad2.right_stick_y;
 
 
             double fudgeFactorPercentage = gamepad2.right_trigger + (-gamepad2.left_trigger);
 
-            float reductionFactor = 1;
+            reductionFactor = 1;
             if (gamepad1.left_bumper) {
                 reductionFactor = 4;
             }
             CRServo intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
             //Set Commands for Intake,Score, and Neutral
             if (gamepad2.a) {
-                intakeServo.setPower(1);
-
+                armSubsystem.intake();
+            } else if (gamepad2.b) {
+                armSubsystem.drop();
             }
             if (Math.abs(arm) > .1) {
                 armSubsystem.setPower(arm * .5);
+                armSubsystem.logPosition();
 
+            } else {
+                armSubsystem.stop();
             }
             armSubsystem.logPosition();
+            if (slide > .1) {
+                slideSubsystem.setPower(-slide);
+            } else if (slideSubsystem.getPosition() > 3632) {
+                slideSubsystem.failsafe();
 
-            if (slide != 0) {
+            } else if (Math.abs(slide) > .1) {
 
                 slideSubsystem.setPower(-slide);
+
             } else {
                 slideSubsystem.stop();
 
-                // set target postion to current position
-                // change mode to run to encoder
-                // set power on again
             }
-            if (gamepad2.dpad_down){
+
+
+            // set target postion to current position
+            // change mode to run to encoder
+            // set power on again
+
+            if (gamepad2.dpad_down) {
                 armSubsystem.lock();
             }
-            if (gamepad2.dpad_up){
+            if (gamepad2.dpad_up) {
                 armSubsystem.unlock();
             }
 
@@ -120,19 +136,22 @@ public class DriveOnlyOpMode extends LinearOpMode {
                 armSubsystem.intake();
             }
 
-             if (gamepad2.x){
+            if (gamepad2.x) {
                 armSubsystem.drop();
             }
-          // Move Slide to positions
+            // Move Slide to positions
 
-
+            armSubsystem.logPosition();
+            slideSubsystem.logPosition();
             telemetry.update();
-       }
-        // driveSubsystem.moveRobotCentric(forward, strafe, turn, reductionFactor);
+
+
+            driveSubsystem.moveRobotCentric(forward, strafe, turn, reductionFactor);
+        }
 
         // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.update();
     }
 }
+
+
 

@@ -67,13 +67,17 @@ public class SlideSubsystem {
 
         this.hardwareMap = hm;
 
+
         assignMotors();
+
+        setToZero();
 
         assignDriveDirections();
 
         shutOffMotors();
 
         driveWithoutEncoders();
+
     }
 
 
@@ -85,6 +89,10 @@ public class SlideSubsystem {
     public void shutOffMotors() {
         slideRightMotor.setPower(0);
         slideLeftMotor.setPower(0);
+    }
+    private void setToZero(){
+        slideLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void setPower(double slide) {
@@ -125,6 +133,11 @@ public class SlideSubsystem {
         slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+    public int getPosition(){
+        int currentLeft =  slideLeftMotor.getCurrentPosition();
+        int currentRight =  slideRightMotor.getCurrentPosition();
+        return (currentLeft+currentRight)/2;
+    }
 
 
     public void stop() {
@@ -138,11 +151,20 @@ public class SlideSubsystem {
         slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     public void failsafe() {
-        slideLeftMotor.setTargetPosition(0);
-        slideRightMotor.setTargetPosition(0);
+        slideLeftMotor.setPower (0);
+        slideRightMotor.setPower(0);
+        slideLeftMotor.setTargetPosition(3632);
+        slideRightMotor.setTargetPosition(3632);
+        slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideLeftMotor.setPower(.5);
         slideRightMotor.setPower(.5);
 
     }
+    public void logPosition(){
+        telemetry.addData("slideMotorPosition",getPosition());
+    }
+
+
 }
 

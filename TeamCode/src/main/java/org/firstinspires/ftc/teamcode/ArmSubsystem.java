@@ -16,22 +16,28 @@ public class ArmSubsystem {
 
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
+
     public ArmSubsystem(HardwareMap hm, Telemetry telemetry) {
         this.hardwareMap = hm;
         this.telemetry = telemetry;
         this.init(hm);
     }
+
     protected void init(HardwareMap hm) {
 
         this.hardwareMap = hm;
 
         assignMotors();
 
+
+
         assignDriveDirections();
 
         shutOffMotors();
 
         driveWithoutEncoders();
+
+
     }
 
     public static final String ARM_MOTOR = "arm_motor";
@@ -44,10 +50,11 @@ public class ArmSubsystem {
         armMotor.setPower(0);
     }
 
-    public void setPower ( double arm) {
+    public void setPower(double arm) {
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armMotor.setPower(arm);
     }
+
 
     private void assignDriveDirections() {
         armMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -57,11 +64,19 @@ public class ArmSubsystem {
     private void assignMotors() {
         armMotor = hardwareMap.get(DcMotor.class, ARM_MOTOR);
         leverLock = hardwareMap.get(Servo.class, "leverLock");
-        intakeServo = hardwareMap.get(CRServo.class,"intakeServo");
+        intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
     }
 
 
 
+
+
+    public void stop() {
+        int currentArm =  armMotor.getCurrentPosition();
+        armMotor.setTargetPosition(currentArm);
+        armMotor.setPower(.5);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
     public void logPosition(){
         telemetry.addData("armMotor",armMotor.getCurrentPosition());
@@ -69,9 +84,11 @@ public class ArmSubsystem {
     public void intake(){
         intakeServo.setPower(-1);
     }
-    public void drop(){intakeServo.setPower(1);}
+    public void drop(){
+        intakeServo.setPower(1);
+    }
 
 
-    public void lock(){leverLock.setPosition(0);}
-    public void unlock(){leverLock.setPosition(.25);}
+    public void unlock(){leverLock.setPosition(0);}
+    public void lock(){leverLock.setPosition(.25);}
 }
