@@ -312,6 +312,5 @@ public class DriveSubsystem {
         telemetry.addData("Currently at", "FL: %7d FR: %7d BL: %7d BR: %7d",
                 frontLeftMotor.getCurrentPosition(), frontRightMotor.getCurrentPosition(),
                 backLeftMotor.getCurrentPosition(), backRightMotor.getCurrentPosition());
-        telemetry.update();
     }
 }

@@ -48,7 +48,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Drive Only OpMode", group="Linear OpMode")
+@TeleOp(name = "Drive Only OpMode", group = "Linear OpMode")
 //@Disabled
 public class DriveOnlyOpMode extends LinearOpMode {
 
@@ -72,8 +72,6 @@ public class DriveOnlyOpMode extends LinearOpMode {
         runtime.reset();
 
 
-
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -90,17 +88,18 @@ public class DriveOnlyOpMode extends LinearOpMode {
             if (gamepad1.left_bumper) {
                 reductionFactor = 4;
             }
-            CRServo intakeServo = hardwareMap.get(CRServo.class,"intakeServo");
+            CRServo intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
             //Set Commands for Intake,Score, and Neutral
             if (gamepad2.a) {
                 intakeServo.setPower(1);
 
             }
-            if (Math.abs(arm) >= 0.5) {
-                armSubsystem.setPower(-arm);
-            } else {
-                armSubsystem.stop();
+            if (Math.abs(arm) > .1) {
+                armSubsystem.setPower(arm * .5);
+
             }
+            armSubsystem.logPosition();
+
             if (slide != 0) {
 
                 slideSubsystem.setPower(-slide);
@@ -111,33 +110,31 @@ public class DriveOnlyOpMode extends LinearOpMode {
                 // change mode to run to encoder
                 // set power on again
             }
-            if (slide == 1);
+            if (gamepad2.dpad_down){
+                armSubsystem.lock();
+            }
+            if (gamepad2.dpad_up){
+                armSubsystem.unlock();
             }
 
-             if (gamepad2.b) {
-                intakeServo.setPower(-1);
 
+            if (gamepad2.b) {
+                armSubsystem.intake();
             }
 
              if (gamepad2.x){
-                intakeServo.setPower(0);
+                armSubsystem.drop();
             }
-
-            // Move Slide to positions
-
+          // Move Slide to positions
 
 
-            if (gamepad2.left_bumper){
-                wrist.moveToPosition(.75);
-            } else if (gamepad2.left_trigger > 0){
-                wrist.moveToPosition(0);
-            }
-
-            driveSubsystem.moveRobotCentric(forward, strafe, turn, reductionFactor);
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
-        }
+       }
+        // driveSubsystem.moveRobotCentric(forward, strafe, turn, reductionFactor);
+
+        // Show the elapsed game time and wheel power.
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.update();
     }
 }
+
