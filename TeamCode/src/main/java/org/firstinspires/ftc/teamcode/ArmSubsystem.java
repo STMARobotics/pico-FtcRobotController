@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,9 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class ArmSubsystem {
     private DcMotor armMotor;
-    private CRServo intakeServo;
-    private Servo leverLock;
-
+    private Servo intakeServo;
+    private Servo wrist;
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
 
@@ -63,27 +62,37 @@ public class ArmSubsystem {
 
     private void assignMotors() {
         armMotor = hardwareMap.get(DcMotor.class, ARM_MOTOR);
-        leverLock = hardwareMap.get(Servo.class, "leverLock");
-        intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
+        wrist = hardwareMap.get(Servo.class, "wristServo");
+        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
     }
-
-
-
-
-
-
+    public void overTheWall(){
+        armMotor.setTargetPosition(100);
+        armMotor.setPower(1);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public void basketDrop(){
+        armMotor.setTargetPosition(10);
+        armMotor.setPower(1);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public void stop() {
+        int currentArm =  armMotor.getCurrentPosition();
+        armMotor.setTargetPosition(currentArm);
+        armMotor.setPower(.5);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
     public void logPosition(){
         telemetry.addData("armMotor",armMotor.getCurrentPosition());
     }
     public void intake(){
-        intakeServo.setPower(-1);
+        intakeServo.setPosition(1);
     }
     public void drop(){
-        intakeServo.setPower(1);
+        intakeServo.setPosition(.25);
     }
+  
 
-
-    public void unlock(){leverLock.setPosition(0);}
-    public void lock(){leverLock.setPosition(.25);}
+    public void unlock(){wrist.setPosition(0);}
+    public void lock(){wrist.setPosition(1);}
 }

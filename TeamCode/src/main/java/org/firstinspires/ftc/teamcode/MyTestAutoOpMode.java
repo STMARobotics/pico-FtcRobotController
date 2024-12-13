@@ -76,9 +76,20 @@ public class MyTestAutoOpMode extends LinearOpMode {
         CommandRunner.OpMode(this)
                 .commands(
                         Forward(5, 2, 3),
-                        TurnLeft(17, 2),
                         StrafeLeft(14, 4, 2),
-                        Backward(12, 2, 4),
+                        Forward(12, 2, 4),
+                        StrafeLeft(14, 4, 2),
+                        Backward(5, 2, 3),
+                        Forward(12, 2, 4),
+                        StrafeLeft(14, 4, 2),
+                        Backward(5, 2, 3),
+                        Forward(12, 2, 4),
+                        StrafeLeft(14, 4, 2),
+                        Backward(5, 2, 3),
+                        Forward(12, 2, 4),
+                        StrafeRight(14, 4, 2),
+
+
                         TurnRight(11, 3),
                         StrafeRight(6,2,1)
                 ).run();

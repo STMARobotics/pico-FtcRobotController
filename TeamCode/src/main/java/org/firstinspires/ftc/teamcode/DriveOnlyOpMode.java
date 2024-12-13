@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -90,66 +91,74 @@ public class DriveOnlyOpMode extends LinearOpMode {
             if (gamepad1.left_bumper) {
                 reductionFactor = 4;
             }
-            CRServo intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
-            //Set Commands for Intake,Score, and Neutral
+            Servo intakeServo = hardwareMap.get(Servo.class, "intakeServo");
+            //Claw driving
             if (gamepad2.a) {
                 armSubsystem.intake();
-            } else if (gamepad2.b) {
+            }
+            else if (gamepad2.y) {
                 armSubsystem.drop();
             }
-            if (Math.abs(arm) > .3) {
-                armSubsystem.setPower(arm * .5);
-                armSubsystem.logPosition();
-
-            }
-            armSubsystem.logPosition();
-            if (slide > .1) {
-                slideSubsystem.setPower(-slide);
-            } else if (slideSubsystem.getPosition() > 3632) {
-                slideSubsystem.failsafe();
-
-            } else if (Math.abs(slide) > .1) {
-
-                slideSubsystem.setPower(-slide);
-
-            } else {
-                slideSubsystem.stop();
-
-            }
-
-
-            // set target postion to current position
-            // change mode to run to encoder
-            // set power on again
-
+            //wrist driving
             if (gamepad2.dpad_down) {
                 armSubsystem.lock();
-            }
-            if (gamepad2.dpad_up) {
+            } else if (gamepad2.dpad_up) {
                 armSubsystem.unlock();
             }
-
-
-            if (gamepad2.b) {
-                armSubsystem.intake();
+            //bucket driving
+            if (gamepad2.b){
+                slideSubsystem.basketdump();
+            }
+            if(gamepad2.x){
+                slideSubsystem.basketup();
             }
 
-            if (gamepad2.x) {
-                armSubsystem.drop();
+            //Arm driving
+            if (arm > .1) {
+                armSubsystem.setPower(-arm);
+            } else if (Math.abs(arm) > .1) {
+
+                armSubsystem.setPower(-arm);
+
+            } else {
+                armSubsystem.stop();
+
+                armSubsystem.logPosition();
+
+                //Commands for slide subsystem
+                if (gamepad1.a) {
+                    slideSubsystem.climb1();
+                }
+                else if (gamepad1.y){
+                    slideSubsystem.climb2();}
+                else if (gamepad2.b) {
+                    slideSubsystem.basketdump();}
+                     else if (Math.abs(slide) > .1) {
+                        slideSubsystem.setPower(-slide);}
+                else  {
+                    slideSubsystem.stop();
+                }
+
+
+
+                // set target postion to current position
+                // change mode to run to encoder
+                // set power on again
+
+
+                // Move Slide to positions
+
+                armSubsystem.logPosition();
+                slideSubsystem.logPosition();
+                telemetry.update();
+
+
+                driveSubsystem.moveRobotCentric(forward, strafe, turn, reductionFactor);
             }
-            // Move Slide to positions
 
-            armSubsystem.logPosition();
-            slideSubsystem.logPosition();
-            telemetry.update();
+            // Show the elapsed game time and wheel power.
 
 
-            driveSubsystem.moveRobotCentric(forward, strafe, turn, reductionFactor);
         }
-
-        // Show the elapsed game time and wheel power.
     }
 }
-
-
-

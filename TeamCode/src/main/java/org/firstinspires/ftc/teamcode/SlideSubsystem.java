@@ -22,6 +22,7 @@ package org.firstinspires.ftc.teamcode;
  */
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -38,12 +39,14 @@ public class SlideSubsystem {
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
     private DcMotor slideLeftMotor;
     private DcMotor slideRightMotor;
+    private Servo basketMotor;
 
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
 
     public static final String SLIDE_LEFT_MOTOR = "slide_left_motor";
     public static final String SLIDE_RIGHT_MOTOR = "slide_right_motor";
+    public static final String BASKET_MOTOR = "basket_servo";
 
     private double countsPerMotorRev;
     private double countsPerInch;
@@ -110,6 +113,8 @@ public class SlideSubsystem {
     private void assignMotors() {
         slideLeftMotor = hardwareMap.get(DcMotor.class, SLIDE_LEFT_MOTOR);
         slideRightMotor = hardwareMap.get(DcMotor.class, SLIDE_RIGHT_MOTOR);
+        basketMotor = hardwareMap.get(Servo.class, BASKET_MOTOR);
+
     }
 
     public void moveRobotCentric(float slide) {
@@ -150,21 +155,45 @@ public class SlideSubsystem {
         slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-    public void failsafe() {
-        slideLeftMotor.setPower (0);
-        slideRightMotor.setPower(0);
-        slideLeftMotor.setTargetPosition(3632);
-        slideRightMotor.setTargetPosition(3632);
-        slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideLeftMotor.setPower(.5);
-        slideRightMotor.setPower(.5);
 
-    }
     public void logPosition(){
         telemetry.addData("slideMotorPosition",getPosition());
     }
+    public void climb1(){
+        slideLeftMotor.setTargetPosition(1000);
+        slideRightMotor.setTargetPosition(1000);
+        slideLeftMotor.setPower(.5);
+        slideRightMotor.setPower(.5);
+        slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideLeftMotor.setTargetPosition(0);
+        slideRightMotor.setTargetPosition(0);
+        slideLeftMotor.setPower(.5);
+        slideRightMotor.setPower(.5);
+        slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public void climb2(){
+        slideLeftMotor.setTargetPosition(1000);
+        slideRightMotor.setTargetPosition(0);
+        slideLeftMotor.setPower(.5);
+        slideRightMotor.setPower(.5);
+        slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideLeftMotor.setTargetPosition(0);
+        slideRightMotor.setTargetPosition(0);
+        slideLeftMotor.setPower(.5);
+        slideRightMotor.setPower(.5);
+        slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
+    public void basketdump(){
+        basketMotor.setPosition(.25);
+    }
+    public void basketup(){
+        basketMotor.setPosition(0);
+    }
 
 }
 

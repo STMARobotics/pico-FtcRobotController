@@ -70,9 +70,9 @@ public class TestDrivetrainOpMode extends LinearOpMode {
         DcMotor slideLeftMotor = hardwareMap.get(DcMotor.class, SLIDE_LEFT_MOTOR);
         DcMotor slideRightMotor = hardwareMap.get(DcMotor.class, SLIDE_RIGHT_MOTOR);
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.REVERSE);
         slideRightMotor.setDirection(DcMotor.Direction.FORWARD);
         slideLeftMotor.setDirection(DcMotor.Direction.FORWARD);
 
