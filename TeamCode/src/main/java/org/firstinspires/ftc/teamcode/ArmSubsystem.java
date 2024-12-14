@@ -88,11 +88,9 @@ public class ArmSubsystem {
     public void intake(){
         intakeServo.setPosition(1);
     }
-    public void drop(){
-        intakeServo.setPosition(.25);
-    }
+    public void drop(){intakeServo.setPosition(.25);}
   
 
-    public void unlock(){wrist.setPosition(0);}
-    public void lock(){wrist.setPosition(1);}
+    public void up(){wrist.setPosition(1);}
+    public void down(){wrist.setPosition(.5);}
 }

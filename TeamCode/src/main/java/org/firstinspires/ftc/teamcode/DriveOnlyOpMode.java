@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -79,7 +78,6 @@ public class DriveOnlyOpMode extends LinearOpMode {
         while (opModeIsActive()) {
 
             forward = -gamepad1.left_stick_y;
-            float slide = gamepad2.left_stick_y;
             strafe = gamepad1.left_stick_x;
             turn = gamepad1.right_stick_x;
             float arm = gamepad2.right_stick_y;
@@ -93,24 +91,24 @@ public class DriveOnlyOpMode extends LinearOpMode {
             }
             Servo intakeServo = hardwareMap.get(Servo.class, "intakeServo");
             //Claw driving
-            if (gamepad2.a) {
+            if (gamepad2.right_bumper) {
                 armSubsystem.intake();
             }
-            else if (gamepad2.y) {
+            else if (gamepad2.left_bumper) {
                 armSubsystem.drop();
             }
             //wrist driving
             if (gamepad2.dpad_down) {
-                armSubsystem.lock();
+                armSubsystem.down();
             } else if (gamepad2.dpad_up) {
-                armSubsystem.unlock();
+                armSubsystem.up();
             }
             //bucket driving
             if (gamepad2.b){
                 slideSubsystem.basketdump();
             }
             if(gamepad2.x){
-                slideSubsystem.basketup();
+                slideSubsystem.baskethold();
             }
 
             //Arm driving
@@ -126,15 +124,11 @@ public class DriveOnlyOpMode extends LinearOpMode {
                 armSubsystem.logPosition();
 
                 //Commands for slide subsystem
-                if (gamepad1.a) {
-                    slideSubsystem.climb1();
+                if (gamepad1.dpad_down) {
+                    slideSubsystem.collapsed();
                 }
-                else if (gamepad1.y){
-                    slideSubsystem.climb2();}
-                else if (gamepad2.b) {
-                    slideSubsystem.basketdump();}
-                     else if (Math.abs(slide) > .1) {
-                        slideSubsystem.setPower(-slide);}
+                else if (gamepad1.dpad_up){
+                    slideSubsystem.highBasket();}
                 else  {
                     slideSubsystem.stop();
                 }

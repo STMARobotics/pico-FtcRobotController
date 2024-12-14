@@ -23,15 +23,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
-import java.util.function.BooleanSupplier;
 
 public class SlideSubsystem {
 
@@ -187,13 +181,29 @@ public class SlideSubsystem {
         slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-
+//b is dump
+    //x is up
     public void basketdump(){
-        basketMotor.setPosition(.25);
-    }
-    public void basketup(){
         basketMotor.setPosition(0);
     }
+    public void baskethold(){
+        basketMotor.setPosition(.5);
+    }
+    public void highBasket(){slideLeftMotor.setTargetPosition(-3494);
+        slideRightMotor.setTargetPosition(-3550);
+        slideLeftMotor.setPower(.75);
+        slideRightMotor.setPower(.75);
+        slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void collapsed() {
+            slideLeftMotor.setTargetPosition(-10);
+            slideRightMotor.setTargetPosition(-10);
+            slideLeftMotor.setPower(.75);
+            slideRightMotor.setPower(.75);
+            slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);}
 
 }
 
