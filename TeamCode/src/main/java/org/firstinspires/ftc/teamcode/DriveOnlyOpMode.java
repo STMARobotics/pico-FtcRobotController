@@ -113,7 +113,7 @@ public class DriveOnlyOpMode extends LinearOpMode {
 
             //Arm driving
             if (arm > .1) {
-                armSubsystem.setPower(-arm);
+                armSubsystem.setPower(-arm * .5);
             } else if (Math.abs(arm) > .1) {
 
                 armSubsystem.setPower(-arm);
