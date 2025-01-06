@@ -87,7 +87,7 @@ public class MyTestAutoOpMode extends LinearOpMode {
         waitForArm(as);
         ds.driveForward(.5,-10);
         //Mckinley test drive
-        ds.driveForward(.65,);
+        ds.driveForward(.65,32);
 
 
 
