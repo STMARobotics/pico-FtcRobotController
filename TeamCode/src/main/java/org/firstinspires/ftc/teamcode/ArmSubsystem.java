@@ -81,16 +81,26 @@ public class ArmSubsystem {
         armMotor.setPower(.5);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+    public void movetoposition(int position){
+        armMotor.setTargetPosition(position);
+        armMotor.setPower(.5);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public boolean isMoving(){
+        return armMotor.isBusy();
+    }
 
     public void logPosition(){
         telemetry.addData("armMotor",armMotor.getCurrentPosition());
     }
+
     public void intake(){
         intakeServo.setPosition(1);
     }
-    public void drop(){intakeServo.setPosition(.25);}
-  
-
+    public void drop(){intakeServo.setPosition(.68);}
+    public void logservoPosition(){
+      //  telemetry.addData("intakeServo",intakeServo.getCurrentPosition());
+    }
     public void up(){wrist.setPosition(1);}
     public void down(){wrist.setPosition(.5);}
 }

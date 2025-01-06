@@ -184,15 +184,14 @@ public class SlideSubsystem {
 //b is dump
     //x is up
     public void basketdump(){
-        basketMotor.setPosition(.125);
+        basketMotor.setPosition(0.01);
     }
     public void baskethold(){
-        basketMotor.setPosition(.5);
-    }
+        basketMotor.setPosition(.3);// was .5
     public void highBasket(){slideLeftMotor.setTargetPosition(-5500);
         slideRightMotor.setTargetPosition(-5500);
-        slideLeftMotor.setPower(.75);
-        slideRightMotor.setPower(.75);
+        slideLeftMotor.setPower(.80);
+        slideRightMotor.setPower(.80);
         slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
@@ -200,8 +199,8 @@ public class SlideSubsystem {
     public void collapsed() {
             slideLeftMotor.setTargetPosition(-10);
             slideRightMotor.setTargetPosition(-10);
-            slideLeftMotor.setPower(.75);
-            slideRightMotor.setPower(.75);
+            slideLeftMotor.setPower(.80);
+            slideRightMotor.setPower(.80);
             slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             slideRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);}
 

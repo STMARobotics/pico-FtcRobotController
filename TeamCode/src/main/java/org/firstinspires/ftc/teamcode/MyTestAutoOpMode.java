@@ -33,7 +33,15 @@ import static org.firstinspires.ftc.teamcode.CommandFactory.*;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 /*
  * This OpMode illustrates the concept of driving a path based on encoder counts.
  * The code is structured as a LinearOpMode
@@ -60,43 +68,43 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Robot: Auto Drive By Encoder", group="Robot")
+@Autonomous(name="Robot: Auto Drive", group="Robot")
 //@Disabled
 public class MyTestAutoOpMode extends LinearOpMode {
-    private DriveSubsystem driveSubSystem;
 
     @Override
     public void runOpMode() {
-
-        driveSubSystem = new DriveSubsystem(hardwareMap, telemetry);
-        CommandFactory.InitFactory(driveSubSystem);
-
+        DriveSubsystem ds = new DriveSubsystem(hardwareMap, telemetry);
+        ArmSubsystem as = new ArmSubsystem(hardwareMap,telemetry);
         waitForStart();
 
-        CommandRunner.OpMode(this)
-                .commands(
-                        Forward(5, 2, 3),
-                        StrafeLeft(14, 4, 2),
-                        Forward(12, 2, 4),
-                        StrafeLeft(14, 4, 2),
-                        Backward(5, 2, 3),
-                        Forward(12, 2, 4),
-                        StrafeLeft(14, 4, 2),
-                        Backward(5, 2, 3),
-                        Forward(12, 2, 4),
-                        StrafeLeft(14, 4, 2),
-                        Backward(5, 2, 3),
-                        Forward(12, 2, 4),
-                        StrafeRight(14, 4, 2),
+        as.intake();
+        ds.strafeLeft(.65,25);
+        waitForMotors(ds);
+        ds.driveForward(.65, 27.5);
+        waitForMotors(ds);
+        as.movetoposition(800);
+        waitForArm(as);
+        ds.driveForward(.5,-10);
+        //Mckinley test drive
+        ds.driveForward(.65,);
 
 
-                        TurnRight(11, 3),
-                        StrafeRight(6,2,1)
-                ).run();
 
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        sleep(1000);  // pause to display final telemetry message.
+
+
+
+
+
+    }
+
+    private void waitForMotors(DriveSubsystem ds) {
+        while (ds.isMoving()) {
+        }
+        return;
+    }
+    private void waitForArm(ArmSubsystem as){
+        while (as.isMoving());
     }
 }

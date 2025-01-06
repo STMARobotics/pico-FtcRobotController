@@ -85,9 +85,9 @@ public class DriveOnlyOpMode extends LinearOpMode {
 
             double fudgeFactorPercentage = gamepad2.right_trigger + (-gamepad2.left_trigger);
 
-            reductionFactor = 1;
+            reductionFactor = 3;
             if (gamepad1.left_bumper) {
-                reductionFactor = 4;
+                reductionFactor = 1;
             }
             Servo intakeServo = hardwareMap.get(Servo.class, "intakeServo");
             //Claw driving
@@ -113,7 +113,7 @@ public class DriveOnlyOpMode extends LinearOpMode {
 
             //Arm driving
             if (arm > .1) {
-                armSubsystem.setPower(-arm * .5);
+                armSubsystem.setPower(-arm * .75);
             } else if (Math.abs(arm) > .1) {
 
                 armSubsystem.setPower(-arm);

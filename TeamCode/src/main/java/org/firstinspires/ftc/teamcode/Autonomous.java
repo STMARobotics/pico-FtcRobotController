@@ -123,7 +123,7 @@ public class Autonomous extends LinearOpMode {
         sleep(10000);  // pause to display final telemetry message.
     }
 
-    /*
+    /* b
      *  Method to perform a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
      *  Move will stop if any of three conditions occur:
