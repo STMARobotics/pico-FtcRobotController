@@ -76,6 +76,7 @@ public class ArmSubsystem {
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     public void stop() {
+        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         int currentArm =  armMotor.getCurrentPosition();
         armMotor.setTargetPosition(currentArm);
         armMotor.setPower(.5);

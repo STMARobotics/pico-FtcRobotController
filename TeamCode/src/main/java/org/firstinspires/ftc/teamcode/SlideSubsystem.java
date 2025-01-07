@@ -73,7 +73,7 @@ public class SlideSubsystem {
 
         shutOffMotors();
 
-        driveWithoutEncoders();
+//        driveWithoutEncoders();
 
     }
 
@@ -187,10 +187,11 @@ public class SlideSubsystem {
         basketMotor.setPosition(.125);
     }
     public void baskethold(){
-        basketMotor.setPosition(.5);
+        basketMotor.setPosition(.65);
     }
-    public void highBasket(){slideLeftMotor.setTargetPosition(-5500);
-        slideRightMotor.setTargetPosition(-5500);
+    public void highBasket() {
+        slideLeftMotor.setTargetPosition(4400);
+        slideRightMotor.setTargetPosition(4400);
         slideLeftMotor.setPower(.80);
         slideRightMotor.setPower(.80);
         slideLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

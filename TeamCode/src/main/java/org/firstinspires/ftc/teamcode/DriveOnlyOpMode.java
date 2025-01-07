@@ -75,6 +75,7 @@ public class DriveOnlyOpMode extends LinearOpMode {
         float strafe;
         float turn;
         float reductionFactor;
+        boolean armIsStopped = false;
         while (opModeIsActive()) {
 
             forward = -gamepad1.left_stick_y;
@@ -112,14 +113,20 @@ public class DriveOnlyOpMode extends LinearOpMode {
             }
 
             //Arm driving
+
             if (arm > .1) {
+                armIsStopped = false;
                 armSubsystem.setPower(-arm * .75);
             } else if (Math.abs(arm) > .1) {
-
+                armIsStopped = false;
                 armSubsystem.setPower(-arm);
 
             } else {
-                armSubsystem.stop();
+               if (!armIsStopped){
+                   armSubsystem.stop();
+                   armIsStopped = true;
+               }
+
 
                 armSubsystem.logPosition();
 
