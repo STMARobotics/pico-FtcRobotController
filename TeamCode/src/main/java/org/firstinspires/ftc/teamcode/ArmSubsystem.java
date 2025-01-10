@@ -96,12 +96,12 @@ public class ArmSubsystem {
     }
 
     public void intake(){
-        intakeServo.setPosition(1);
+        intakeServo.setPosition(.9);
     }
-    public void drop(){intakeServo.setPosition(.68);}
+    public void drop(){intakeServo.setPosition(.8);}
     public void logservoPosition(){
       //  telemetry.addData("intakeServo",intakeServo.getCurrentPosition());
     }
     public void up(){wrist.setPosition(1);}
-    public void down(){wrist.setPosition(.5);}
+    public void down(){wrist.setPosition(.2);}
 }

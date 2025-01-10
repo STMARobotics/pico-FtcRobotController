@@ -81,13 +81,17 @@ public class MyTestAutoOpMode extends LinearOpMode {
         as.intake();
         ds.strafeLeft(.65,25);
         waitForMotors(ds);
-        ds.driveForward(.65, 27.5);
+        ds.driveForward(.65, 33);
         waitForMotors(ds);
-        as.movetoposition(800);
+        as.movetoposition(1700);
         waitForArm(as);
-        ds.driveForward(.5,-10);
-        //Mckinley test drive
-        ds.driveForward(.65,32);
+        ds.driveForward(.3,-15);
+        waitForMotors(ds);
+
+        //Mckinley test
+
+
+
 
 
 
